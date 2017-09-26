@@ -487,7 +487,11 @@
 
                 var templateSearch = searchContext.GetQueryable<SitecoreUISearchResultItem>(new CultureExecutionContext(cultureInfo))
                     .Where(templateField => templateField["Is Displayed in Search Results".ToLowerInvariant()] == "1");
-                cachedIsDisplayedSearch = templateSearch.ToList().ConvertAll(d => new Tuple<string, string, string>(d.GetItem().ID.ToString(), d.Language, d.Version));
+
+                using (new SecurityDisabler())
+                {
+                    cachedIsDisplayedSearch = templateSearch.ToList().ConvertAll(d => new Tuple<string, string, string>(d.GetItem().ID.ToString(), d.Language, d.Version));
+                }
 
                 if (CacheHashTable[cacheName] == null)
                 {

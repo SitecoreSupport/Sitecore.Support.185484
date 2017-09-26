@@ -1,6 +1,7 @@
-﻿namespace Sitecore.Buckets.Pipelines.UI.FillItem
+﻿namespace Sitecore.Support.Buckets.Pipelines.UI.FillItem
 {
     using Sitecore;
+    using Sitecore.Buckets.Pipelines.UI.FillItem;
     using Sitecore.Buckets.Pipelines.UI.FillItem.FieldTypeRenderers;
     using Sitecore.ContentSearch.SearchTypes;
     using Sitecore.Data;
@@ -14,34 +15,26 @@
     using System.Linq;
     using System.Web;
 
-    public class ShowFieldValuesInResults : FillItemProcessor
-    {
-        protected virtual Database GetContentDatabase()
-        {
-            return Context.ContentDatabase;
-        }
-
-        [Obsolete("Use ProcessFieldsToShow instead.")]
-        protected virtual void GetQuickActions(FillItemArgs args)
-        {
-            this.ProcessFieldsToShow(args);
-        }
-
+    public class ShowFieldValuesInResults : Sitecore.Buckets.Pipelines.UI.FillItem.ShowFieldValuesInResults
+    {       
         private static void GetValue(IEnumerable<TemplateFieldItem> templateFieldItems, Item innerItem, SitecoreUISearchResultItem searchResultItem)
         {
             foreach (TemplateFieldItem item in templateFieldItems.Distinct<TemplateFieldItem>(new TemplateFieldComparaer()))
             {
-                Field field = innerItem.Fields[item.Name];
-                if (field != null)
+                if (Context.ContentDatabase.GetItem(item.ID, item.InnerItem.Language, item.InnerItem.Version) != null)
                 {
-                    IFieldTypeRenderer renderer = FieldTypeRendererFactory.GetRenderer(field);
-                    searchResultItem.Content = searchResultItem.Content + renderer.GetContent();
-                    if (((field.TypeKey != "multilist") || string.IsNullOrEmpty(searchResultItem.ImagePath)) && ((field.TypeKey != "attachment") || string.IsNullOrEmpty(searchResultItem.ImagePath)))
+                    Field field = innerItem.Fields[item.Name];
+                    if (field != null)
                     {
-                        string imagePath = renderer.GetImagePath();
-                        if (!string.IsNullOrEmpty(imagePath))
+                        IFieldTypeRenderer renderer = FieldTypeRendererFactory.GetRenderer(field);
+                        searchResultItem.Content = searchResultItem.Content + renderer.GetContent();
+                        if (((field.TypeKey != "multilist") || string.IsNullOrEmpty(searchResultItem.ImagePath)) && ((field.TypeKey != "attachment") || string.IsNullOrEmpty(searchResultItem.ImagePath)))
                         {
-                            searchResultItem.ImagePath = imagePath;
+                            string imagePath = renderer.GetImagePath();
+                            if (!string.IsNullOrEmpty(imagePath))
+                            {
+                                searchResultItem.ImagePath = imagePath;
+                            }
                         }
                     }
                 }
