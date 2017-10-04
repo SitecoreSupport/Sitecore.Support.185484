@@ -1,4 +1,4 @@
-﻿namespace ItemBuckets.Services
+﻿namespace ItemBuckets.Support.Services
 {
     using System;
     using System.Collections;

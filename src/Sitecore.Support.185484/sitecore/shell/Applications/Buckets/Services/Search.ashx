@@ -1,1 +1,1 @@
-﻿<%@ WebHandler Language="C#" CodeBehind="Search.ashx.cs" Class="ItemBuckets.Services.Search, Sitecore.Support.185484" %>
+﻿<%@ WebHandler Language="C#" CodeBehind="Search.ashx.cs" Class="ItemBuckets.Support.Services.Search, Sitecore.Support.185484" %>
